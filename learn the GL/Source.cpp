@@ -2,6 +2,11 @@
 #include <glfw/glfw3.h>
 #include <iostream>
 #include "SHADER.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
