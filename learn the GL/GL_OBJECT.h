@@ -26,7 +26,8 @@ public:
 		glGenBuffers(1, &objectID);
 		ID = &objectID;
 	}
-	virtual void bufferData(const void* data, GLenum usage) const = 0;
+	//beware that sizeof(data) wouldn't work, as it would only return the size of the pointer, not the actual array 
+	virtual void bufferData(const void* data, GLenum usage, GLsizeiptr size) const = 0; 
 	void kill() override
 	{
 		if(isDead())
@@ -65,15 +66,17 @@ public:
 		else
 			glBindBuffer(GL_ARRAY_BUFFER, *ID);
 	}
-	void bufferData(const void* data, GLenum usage) const override
+	void bufferData(const void* data, GLenum usage, GLsizeiptr size ) const override	
 	{
 		if (isBound())
-			glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, usage);
+			glBufferData(GL_ARRAY_BUFFER, size, data, usage);
 		else
 			std::cout << "GL_OJBECT::VBO::bufferData::this VBO is not currently bound" << std::endl;
 	}
 	bool isBound() const override
 	{
+		if (isDead())
+			return false;
 		int data;
 		glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &data);
 		return data == *ID;
@@ -93,15 +96,17 @@ public:
 		else
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *ID);
 	}
-	void bufferData(const void* data, GLenum usage) const override
+	void bufferData(const void* data, GLenum usage, GLsizeiptr size) const override
 	{
 		if (isBound())
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(data), data, usage);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, usage);
 		else
 			std::cout << "GL_OJBECT::EBO::bufferData::this EBO is not currently bound" << std::endl;
 	}
 	bool isBound() const override
 	{
+		if (isDead())
+			return false;
 		int data;
 		glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &data);
 		return data == *ID;
@@ -224,16 +229,16 @@ public:
 			std::cout << "GL_OBJECT::VAO::overwriteVBO::this VAO does not have a VBO to overwrite" << std::endl;
 		}
 	}
-	void vertexBufferData(const void* data, GLenum usage) const
+	void vertexBufferData(const void* data, GLenum usage, GLsizeiptr size) const
 	{
 		if (isBound())
 		{
 			if (haveVBO())
 			{
 				if (vertexBufferObjectPtr->isBound())
-					vertexBufferObjectPtr->bufferData(data, usage);
+					vertexBufferObjectPtr->bufferData(data, usage, size);
 				if (vertexBufferObject.isBound())
-					vertexBufferObject.bufferData(data, usage);
+					vertexBufferObject.bufferData(data, usage, size);
 				else
 					std::cout << "GL_OBJECT::VAO::vertexBufferData::this VBO is not currently bound" << std::endl;
 			}
@@ -312,16 +317,16 @@ public:
 			std::cout << "GL_OBJECT::VAO::overwriteEBO::this VAO does not have an EBO to overwrite" << std::endl;
 		}
 	}
-	void elementBufferData(const void* data, GLenum usage) const
+	void elementBufferData(const void* data, GLenum usage, GLsizeiptr size) const
 	{
 		if (isBound())
 		{
 			if (haveEBO())
 			{
 				if (elementBufferObjectPtr->isBound())
-					elementBufferObjectPtr->bufferData(data, usage);
+					elementBufferObjectPtr->bufferData(data, usage, size);
 				if (elementBufferObject.isBound())
-					elementBufferObject.bufferData(data, usage);
+					elementBufferObject.bufferData(data, usage, size);
 				else
 					std::cout << "GL_OBJECT::VAO::elementBufferData::this EBO is not currently bound" << std::endl;
 			}
