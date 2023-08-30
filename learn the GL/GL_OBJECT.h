@@ -5,7 +5,7 @@
 class GLObject
 {
 public:
-	unsigned int* ID = nullptr;
+	unsigned int* ID = 0;
 
 	virtual void bind() const = 0;
 	virtual bool isBound() const = 0;
@@ -13,7 +13,7 @@ public:
 	virtual void kill() = 0;
 	bool isDead() const
 	{
-		return ID == nullptr;
+		return ID == 0;
 	}
 	virtual void generate(unsigned int& objectID) = 0;
 };
@@ -35,7 +35,7 @@ public:
 		else
 		{
 			glDeleteBuffers(1, ID);
-			ID = nullptr;
+			ID = 0;
 		}
 	}
 	void generate(unsigned int& objectID) 
@@ -52,6 +52,7 @@ public:
 	}
 };
 
+//TODO copy initialization, or = operator, should either be forbidden, or they should cause the dangling object to be killed.
 class VBO : public dataObject
 {
 public:
@@ -77,7 +78,7 @@ public:
 	{
 		if (isDead())
 			return false;
-		int data;
+		int data = 0;
 		glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &data);
 		return data == *ID;
 	}
@@ -107,7 +108,7 @@ public:
 	{
 		if (isDead())
 			return false;
-		int data;
+		int data = 0;
 		glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &data);
 		return data == *ID;
 	}
@@ -142,7 +143,7 @@ public:
 
 	bool isBound() const override
 	{
-		int data;
+		int data = 0;
 		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &data);
 		return data == *ID;
 	}
@@ -237,7 +238,7 @@ public:
 			{
 				if (vertexBufferObjectPtr->isBound())
 					vertexBufferObjectPtr->bufferData(data, usage, size);
-				if (vertexBufferObject.isBound())
+				else if (vertexBufferObject.isBound())
 					vertexBufferObject.bufferData(data, usage, size);
 				else
 					std::cout << "GL_OBJECT::VAO::vertexBufferData::this VBO is not currently bound" << std::endl;
@@ -325,7 +326,7 @@ public:
 			{
 				if (elementBufferObjectPtr->isBound())
 					elementBufferObjectPtr->bufferData(data, usage, size);
-				if (elementBufferObject.isBound())
+				else if (elementBufferObject.isBound())
 					elementBufferObject.bufferData(data, usage, size);
 				else
 					std::cout << "GL_OBJECT::VAO::elementBufferData::this EBO is not currently bound" << std::endl;
@@ -344,7 +345,7 @@ public:
 		else
 		{
 			glDeleteVertexArrays(1, ID);
-			ID = nullptr;
+			ID = 0;
 		}
 	}
 	void generate(unsigned int& objectID) override
@@ -360,6 +361,9 @@ public:
 		}
 	}
 
+	VAO(const VAO&) = delete;
+	VAO& operator=(const VAO&) = delete;
+	~VAO() { kill(); }
 };
 
 #endif // !VAO
