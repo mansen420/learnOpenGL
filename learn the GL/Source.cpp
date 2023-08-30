@@ -45,31 +45,12 @@ int main()
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
     };
-    unsigned int vao0;
-    VAO vaoObject(vao0);
+    unsigned int vao0, vbo0, ebo0;
+    VAO vaoObject(vao0, vbo0, ebo0);
     vaoObject.bind();
-    /* 
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-    */
-
-    unsigned int vbo0;
-    VBO vboObject (vbo0);
-
-    vaoObject.addVBO(&vboObject);
-    vaoObject.bindVBO();
+    vaoObject.bindVBO(), vaoObject.bindEBO();
     vaoObject.vertexBufferData(vertices, GL_STATIC_DRAW, sizeof(vertices));
-  //  vboObject.bufferData(vertices, GL_STATIC_DRAW);
-   // vaoObject.vertexBufferData(vertices, GL_STATIC_DRAW);
-    // unsigned int VBO;
-    // glGenBuffers(1, &VBO);
-   // glBindBuffer(GL_ARRAY_BUFFER, vbo0);
-   // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-  
-    unsigned int EBO;
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    vaoObject.elementBufferData(indices, GL_STATIC_DRAW, sizeof(indices));
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
