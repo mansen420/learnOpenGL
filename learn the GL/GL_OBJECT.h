@@ -4,27 +4,28 @@
 #include <iostream>
 class GLObject
 {
+protected:
+	unsigned int ID = 0;
 public:
-	unsigned int* ID = 0;
 
 	virtual void bind() const = 0;
 	virtual bool isBound() const = 0;
 
 	virtual void kill() = 0;
-	bool isDead() const
-	{
-		return ID == 0;
-	}
-	virtual void generate(unsigned int& objectID) = 0;
+	virtual void generate() = 0;
+
+	bool isDead() const { return ID == 0; }
+	const unsigned int& getID() { return ID; }
 };
 class dataObject : public GLObject
 {
 public:
-	dataObject(){}
-	dataObject(unsigned int& objectID)
+	dataObject(bool generateObjects = true)
 	{
-		glGenBuffers(1, &objectID);
-		ID = &objectID;
+		if (generateObjects)
+		{
+			glGenBuffers(1, &ID);
+		}
 	}
 	//beware that sizeof(data) wouldn't work, as it would only return the size of the pointer, not the actual array 
 	virtual void bufferData(const void* data, GLenum usage, GLsizeiptr size) const = 0; 
@@ -34,16 +35,15 @@ public:
 			std::cout << "GL_OJBECT::dataObject::kill::this object is already dead" << std::endl;
 		else
 		{
-			glDeleteBuffers(1, ID);
+			glDeleteBuffers(1, &ID);
 			ID = 0;
 		}
 	}
-	void generate(unsigned int& objectID) 
+	void generate() override
 	{
 		if (isDead())
 		{
-			glGenBuffers(1, &objectID);
-			ID = &objectID;
+			glGenBuffers(1, &ID);
 		}
 		else
 		{
@@ -56,8 +56,7 @@ public:
 class VBO : public dataObject
 {
 public:
-	VBO(){}
-	VBO(unsigned int& objectID) : dataObject(objectID)
+	VBO(bool generateObjects = true) : dataObject(generateObjects)
 	{
 	}
 	void bind() const override
@@ -65,7 +64,7 @@ public:
 		if (isDead())
 			std::cout << "GL_OBJECT::VBO::bind::this object is dead" << std::endl;
 		else
-			glBindBuffer(GL_ARRAY_BUFFER, *ID);
+			glBindBuffer(GL_ARRAY_BUFFER, ID);
 	}
 	void bufferData(const void* data, GLenum usage, GLsizeiptr size ) const override	
 	{
@@ -80,14 +79,16 @@ public:
 			return false;
 		int data = 0;
 		glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &data);
-		return data == *ID;
+		return data == ID;
 	}
+	VBO(const VBO&) = delete;
+	VBO& operator=(const VBO&) = delete;
+	~VBO() { kill(); }
 };
 class EBO : public dataObject
 {
 public:
-	EBO(){}
-	EBO(unsigned int& objectID) : dataObject(objectID)
+	EBO(bool generateObjects = true) : dataObject(generateObjects)
 	{
 	}
 	void bind() const override
@@ -95,7 +96,7 @@ public:
 		if (isDead())
 			std::cout << "GL_OBJECT::EBO::bind::this object is dead" << std::endl;
 		else
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *ID);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
 	}
 	void bufferData(const void* data, GLenum usage, GLsizeiptr size) const override
 	{
@@ -110,42 +111,41 @@ public:
 			return false;
 		int data = 0;
 		glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &data);
-		return data == *ID;
+		return data == ID;
 	}
+	EBO(const EBO&) = delete;
+	EBO& operator=(const EBO&) = delete;
+	~EBO() { kill(); }
 };
 class VAO : public GLObject
 {
 private:
-	VBO* vertexBufferObjectPtr = new VBO();		//for pre-exsting objects
-	EBO* elementBufferObjectPtr = new EBO();
-	VBO vertexBufferObject;						//embedded objects
+	VBO* vertexBufferObjectPtr = new VBO(false);		//for pre-exsting objects
+	EBO* elementBufferObjectPtr = new EBO(false);
+	VBO vertexBufferObject;				//embedded objects
 	EBO elementBufferObject;
 public:
 	//TODO add overloading for pre-exsting objects
-	VAO(unsigned int& VAOobjectID)
-	{
-		glGenVertexArrays(1, &VAOobjectID);
-		ID = &VAOobjectID;
+	VAO()
+	{	
+		//I dont know why the compiler won't let me initialize these objects with false so I am killing them here.
+		vertexBufferObject.kill();
+		elementBufferObject.kill();
+		glGenVertexArrays(1, &ID);
 	}
-	VAO(unsigned int& VAOobjectID, unsigned int& VBOobjectID)
+	VAO(bool generateBuffers)
 	{
-		glGenVertexArrays(1, &VAOobjectID);
-		ID = &VAOobjectID;
-		vertexBufferObject = VBO(VAOobjectID);
-	}
-	VAO(unsigned int& VAOobjectID, unsigned int& VBOobjectID, unsigned int& EBOobjectID)
-	{
-		glGenVertexArrays(1, &VAOobjectID);
-		ID = &VAOobjectID;
-		vertexBufferObject = VBO(VAOobjectID);
-		elementBufferObject = EBO(EBOobjectID);
+		if (generateBuffers)
+		{
+			glGenVertexArrays(1, &ID);
+		}
 	}
 
 	bool isBound() const override
 	{
 		int data = 0;
 		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &data);
-		return data == *ID;
+		return data == ID;
 	}
 	bool haveVBO() const
 	{
@@ -161,16 +161,16 @@ public:
 		if (isDead())
 			std::cout << "GL_OBJECT::VAO::bind::this object is dead" << std::endl;
 		else
-			glBindVertexArray(*ID);
+			glBindVertexArray(ID);
 	}
 
-	void addVBO(unsigned int& VBOobjectID)
+	void addVBO()
 	{
 		if (haveVBO())
 			std::cout << "GL_OBJECT::VAO::addVBO::this VAO already has an associated VBO" << std::endl;
 		else
 		{
-			vertexBufferObject = VBO(VBOobjectID);
+			vertexBufferObject.generate();
 		}
 	}
 	void addVBO(VBO* vertexBufferObjectPTR)
@@ -200,29 +200,29 @@ public:
 		else
 			std::cout << "GL_OBJECT::VAO::bindVBO::no VBO objectID provided" << std::endl;
 	}
-	void overwriteVBO(unsigned int& VBOojectID)
+	void overwriteVBO()
 	{
 		if (haveVBO())
 		{
 			if (!vertexBufferObject.isDead())
 				vertexBufferObject.kill();
 			if (!vertexBufferObjectPtr->isDead())
-				vertexBufferObjectPtr->kill();
-			vertexBufferObject = VBO(VBOojectID);
+				vertexBufferObjectPtr = new VBO(false);
+			vertexBufferObject.generate();
 		}
 		else
 		{
 			std::cout << "GL_OBJECT::VAO::overwriteVBO::this VAO does not have a VBO to overwrite" << std::endl;
 		}
 	}
-	void overwriteVBO(VBO* vertexBufferObjectPTR)
+	void overwriteVBO(VBO* vertexBufferObjectPTR)		//beware that this function will call kill() on any correspondig buffer object assigned to this VAO
 	{
 		if (haveVBO())
 		{
 			if (!vertexBufferObject.isDead())
 				vertexBufferObject.kill();
-			if (!vertexBufferObjectPtr->isDead())
-				vertexBufferObjectPtr->kill();
+			if (vertexBufferObjectPtr->isDead())
+				delete vertexBufferObjectPtr;
 			vertexBufferObjectPtr = vertexBufferObjectPTR;
 		}
 		else
@@ -250,13 +250,13 @@ public:
 			std::cout << "GL_OJBECT::VAO::vertexBufferData::this VAO is not currently bound" << std::endl;
 	}
 
-	void addEBO(unsigned int& EBOobjectID)
+	void addEBO()
 	{
 		if (haveEBO())
 			std::cout << "GL_OBJECT::VAO::addEBO::this VAO already has an associated EBO" << std::endl;
 		else
 		{
-			elementBufferObject = EBO(EBOobjectID);
+			elementBufferObject.generate();
 		}
 
 	}
@@ -288,15 +288,15 @@ public:
 		else
 			std::cout << "GL_OBJECT::VAO::bindEBO::no EBO objectID provided" << std::endl;
 	}
-	void overwriteEBO(unsigned int& EBOojectID)
+	void overwriteEBO()
 	{
 		if (haveEBO())
 		{
 			if (!elementBufferObject.isDead())
 				elementBufferObject.kill();
 			if (!elementBufferObjectPtr->isDead())
-				elementBufferObjectPtr->kill();
-			elementBufferObject = EBO(EBOojectID);
+				elementBufferObjectPtr = new EBO(false);
+			elementBufferObject.generate();
 		}
 		else
 		{
@@ -309,8 +309,8 @@ public:
 		{
 			if (!elementBufferObject.isDead())
 				elementBufferObject.kill();
-			if (!elementBufferObjectPtr->isDead())
-				elementBufferObjectPtr->kill();
+			if (elementBufferObjectPtr->isDead())
+				delete elementBufferObjectPtr;
 			elementBufferObjectPtr = elementBufferObjectPTR;
 		}
 		else
@@ -344,16 +344,19 @@ public:
 			std::cout << "GL_OJBECT::VAO::kill::this VAO is already dead" << std::endl;
 		else
 		{
-			glDeleteVertexArrays(1, ID);
+			if (vertexBufferObjectPtr->isDead())
+				delete vertexBufferObjectPtr;
+			if (elementBufferObjectPtr->isDead())
+				delete elementBufferObjectPtr;
+			glDeleteVertexArrays(1, &ID);
 			ID = 0;
 		}
 	}
-	void generate(unsigned int& objectID) override
+	void generate() override
 	{
 		if (isDead())
 		{
-			glGenVertexArrays(1, &objectID);
-			ID = &objectID; 
+			glGenVertexArrays(1, &ID);
 		}
 		else
 		{

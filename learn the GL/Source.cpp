@@ -45,16 +45,12 @@ int main()
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
     };
-    unsigned int vao0, vbo0, ebo0;
-    VBO vboObj(vbo0); 
-    EBO eboObj(ebo0);
-    VAO vaoObject(vao0);
-    vaoObject.bind();
-    vaoObject.addVBO(&vboObj), vaoObject.addEBO(&eboObj);
-    vaoObject.bindVBO(), vaoObject.bindEBO();
 
-    vaoObject.vertexBufferData(vertices, GL_STATIC_DRAW, sizeof(vertices));
-    vaoObject.elementBufferData(indices, GL_STATIC_DRAW, sizeof(indices));
+    VAO vao0(true);
+    vao0.bind(); 
+    vao0.bindVBO(), vao0.bindEBO();
+    vao0.vertexBufferData(vertices, GL_STATIC_DRAW, sizeof(vertices));
+    vao0.elementBufferData(indices, GL_STATIC_DRAW, sizeof(indices));
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -68,7 +64,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaders.ID);
-        vaoObject.bind();       //inefficient
+        glBindVertexArray(vao0.getID());
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
