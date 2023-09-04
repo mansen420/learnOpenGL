@@ -21,9 +21,21 @@
     <ClCompile Include="..\..\..\..\Desktop\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MISC_DEF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SHADER.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GL_OBJECT.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CAMERA.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MISC_DECLR.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
