@@ -121,6 +121,10 @@
     <ClInclude Include="learn the gl\MISC_DECLR.h" />
     <ClInclude Include="learn the gl\SHADER.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="learn the GL\fragmentShader.GLSL" />
+    <None Include="learn the GL\vertexShader.GLSL" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
