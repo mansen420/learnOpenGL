@@ -46,5 +46,8 @@
     <None Include="learn the GL\vertexShader.GLSL">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="fragmentShaderLIGHT.GLSL">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
