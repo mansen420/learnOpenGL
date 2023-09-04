@@ -20,9 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\Desktop\src\glad.c" />
+    <ClCompile Include="MISC_DEF.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CAMERA.h" />
+    <ClInclude Include="MISC_DECLR.h" />
     <ClInclude Include="SHADER.h" />
     <ClInclude Include="GL_OBJECT.h" />
   </ItemGroup>
