@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="learn the gl\callbackFunctions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="learn the gl\MISC_DEF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

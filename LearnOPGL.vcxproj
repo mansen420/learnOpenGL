@@ -111,7 +111,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Desktop\src\glad.c" />
-    <ClCompile Include="learn the gl\callbackFunctions.cpp" />
     <ClCompile Include="learn the gl\MISC_DEF.cpp" />
     <ClCompile Include="learn the gl\Source.cpp" />
   </ItemGroup>
