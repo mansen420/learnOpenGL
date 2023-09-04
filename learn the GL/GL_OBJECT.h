@@ -119,7 +119,7 @@ public:
 };
 class VAO : public GLObject
 {
-private:
+public:	//temporary solution 
 	VBO* vertexBufferObjectPtr = new VBO(false);		//for pre-exsting objects
 	EBO* elementBufferObjectPtr = new EBO(false);
 	VBO vertexBufferObject;				//embedded objects

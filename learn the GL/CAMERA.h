@@ -8,8 +8,8 @@
 #include "MISC_DECLR.h"
 
 class Camera
-{
-private:
+{	
+public:		//temporary
 	GLFWwindow* window;
 	glm::mat4* view;
 
