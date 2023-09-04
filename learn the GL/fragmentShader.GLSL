@@ -7,7 +7,7 @@ in vec3 normal;
 
 uniform sampler2D texture0;
 
-uniform vec3 lightColor = vec3(1.0, 1.0, 1.0);
+uniform vec3 lightColor = vec3(1.0, 0.85, 0.8);
 uniform vec3 objectColor = vec3(0.3,0.5,0.9);
 
 uniform vec3 lightPos;
@@ -29,5 +29,5 @@ void main()
     vec3 specular = specFactor*spec*lightColor;
 
     vec3 result = ambient+diffuse+specular;      //how much light to reflect 
-    FragColor = vec4(result * objectColor, 1.0);
+    FragColor = vec4(result , 1.0)*texture(texture0, textureCoordinates);
 }
