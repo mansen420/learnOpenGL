@@ -112,12 +112,12 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::mat4  model, projection = glm::mat4(1.0f);
-    //    model = glm::rotate(model, (float)glfwGetTime() * glm::radians(-10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(-10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         projection = glm::perspective(glm::radians(fov), 1.0f, 0.1f, 100.0f);
 
 
         glUseProgram(shaders.ID);
-        glm::vec3 lightPos(3.0f*cos(0.5*glfwGetTime()), 3.0f * sin(0.5*glfwGetTime()), 0.0f);
+        glm::vec3 lightPos(3.0f*cos(0.25*glfwGetTime()), 3.0f * sin(0.25*glfwGetTime()), 0.0f);
         glUniform3f(glGetUniformLocation(shaders.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
