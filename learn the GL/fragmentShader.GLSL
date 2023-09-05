@@ -20,7 +20,7 @@ void main()
     //diffuse
     vec3 direction = normalize(lightPos-fragPosition);
     float normalFactor = max(dot(direction, normalize(normal)), 0.0);
-    vec3 diffuse = normalFactor*lightColor;
+    vec3 diffuse = 0.7*normalFactor*lightColor;
     //specular
     float specFactor = 0.3;
     vec3 camDirection = normalize(camPos-fragPosition);
