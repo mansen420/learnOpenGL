@@ -9,11 +9,15 @@ uniform vec3 camPos;
 
 struct Material
 {
-    vec3 ambient;
+    sampler2D ambient;
     sampler2D diffuse;
     sampler2D specular;
     float shininess;
 };
+//magic constants 
+float constantFactor= 1.0;
+float linearFactor = 0.09; 
+float quadraticFactor = 0.032;
 struct Light
 {
     vec3 ambient;
@@ -24,6 +28,8 @@ struct Light
 uniform Light cubeLight;
 uniform Material defaultMaterial;
 
+float lightDistane = length(fragPosition-cubeLight.position);
+float attenutation = 1.0/(lightDistane*lightDistane*quadraticFactor + lightDistane*linearFactor + constantFactor);
 void main()
 {
     //ambient 
@@ -36,8 +42,9 @@ void main()
     vec3 camDirection = normalize(camPos-fragPosition);
     vec3 reflectDir = reflect(-direction, normalize(normal));
     float spec = pow(max(dot(camDirection, reflectDir),0.0), defaultMaterial.shininess);
-    vec3 specular = spec * vec3(texture(defaultMaterial.specular, textureCoordinates)) * cubeLight.specular;
+    vec3 specMap = vec3(texture(defaultMaterial.specular, textureCoordinates));
+    vec3 specular = spec * specMap * cubeLight.specular;
 
-    vec3 result = ambient+diffuse+specular;      //how much light to reflect * color of the object 
+    vec3 result = (ambient+diffuse+specular) * attenutation;     //how much light to reflect * color of the object 
     FragColor = vec4(result, 1.0);
 }

@@ -105,12 +105,27 @@ int main()
     }
     else
         std::cout << "loading texture failed" << std::endl;
+
+    data = 0;
+    data = stbi_load("C:/Users/msi/Desktop/matrix.JPG", &width, &height, &nrChannels, 0);
+    unsigned int texture2;
+    if (data)
+    {
+        glGenTextures(1, &texture2);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, texture2);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+        std::cout << "loading texture failed" << std::endl;
     //shader configuration 
     Shader shaders("C:/Users/msi/source/repos/learn the GL/learn the GL/vertexShader.GLSL",
                    "C:/Users/msi/source/repos/learn the GL/learn the GL/fragmentShader.GLSL");
     shaders.use();      //use() before setting uniforms
     glUniform1i(glGetUniformLocation(shaders.ID, "defaultMaterial.diffuse"), 0);
     glUniform1i(glGetUniformLocation(shaders.ID, "defaultMaterial.specular"), 1);
+    glUniform1i(glGetUniformLocation(shaders.ID, "defaultMaterial.ambient"), 2);
     //object material values
     glUniform3f(glGetUniformLocation(shaders.ID, "defaultMaterial.ambient"), 1.0f, 0.5f, 0.31f);
     glUniform3f(glGetUniformLocation(shaders.ID, "defaultMaterial.diffuse"), 1.0f, 0.5f, 0.31f);
@@ -118,7 +133,7 @@ int main()
     glUniform1f(glGetUniformLocation(shaders.ID, "defaultMaterial.shininess"), 32.0f);
     //light values
     glUniform3f(glGetUniformLocation(shaders.ID, "cubeLight.ambient"), 0.2f, 0.2f, 0.2f);
-    glUniform3f(glGetUniformLocation(shaders.ID, "cubeLight.diffuse"), 0.5f, 0.5f, 0.5f);
+    glUniform3f(glGetUniformLocation(shaders.ID, "cubeLight.diffuse"), 0.7f, 0.7f, 0.7f);
     glUniform3f(glGetUniformLocation(shaders.ID, "cubeLight.specular"), 1.0f, 1.0f, 1.0f);
 
     Shader shaderLIGHT("C:/Users/msi/source/repos/learn the GL/learn the GL/vertexShader.GLSL",
@@ -138,14 +153,13 @@ int main()
 
 
         glUseProgram(shaders.ID);
-        glm::vec3 lightPos(3.0f*cos(0.25*glfwGetTime()), 3.0f * sin(0.25*glfwGetTime()), 0.0f);
+//        glm::vec3 lightPos(3.0f*cos(0.25*glfwGetTime()), 3.0f * sin(0.25*glfwGetTime()), 0.0f);
+        glm::vec3 lightPos(12.0f * cos(glfwGetTime()), 0.0f, 0.0f);
         glUniform3f(glGetUniformLocation(shaders.ID, "cubeLight.position"), lightPos.x, lightPos.y, lightPos.z);
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
         glBindVertexArray(vao0.getID());
-
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         shaderLIGHT.use();
@@ -157,9 +171,11 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(shaderLIGHT.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glBindVertexArray(vao1LIGHT.getID());
         glDrawArrays(GL_TRIANGLES, 0, 36);
+
         cam.update();
         shaders.use();
         glUniform3f(glGetUniformLocation(shaders.ID, "camPos"), cam.cameraPosition.x, cam.cameraPosition.y, cam.cameraPosition.z);
+
         glfwSwapBuffers(myWindow);
         glfwPollEvents();
     }
