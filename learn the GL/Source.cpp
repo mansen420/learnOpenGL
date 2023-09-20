@@ -136,6 +136,10 @@ int main()
     glUniform3f(glGetUniformLocation(shaders.ID, "cubeLight.diffuse"), 0.7f, 0.7f, 0.7f);
     glUniform3f(glGetUniformLocation(shaders.ID, "cubeLight.specular"), 1.0f, 1.0f, 1.0f);
 
+    glUniform3f(glGetUniformLocation(shaders.ID, "flashLight.ambient"), 0.2f, 0.2f, 0.2f);
+    glUniform3f(glGetUniformLocation(shaders.ID, "flashLight.diffuse"), 0.7f, 0.7f, 0.7f);
+    glUniform3f(glGetUniformLocation(shaders.ID, "flashLight.specular"), 1.0f, 1.0f, 1.0f);
+    glUniform1f(glGetUniformLocation(shaders.ID, "flashLight.cutOff"), 12.5f);
     Shader shaderLIGHT("C:/Users/msi/source/repos/learn the GL/learn the GL/vertexShader.GLSL",
         "C:/Users/msi/source/repos/learn the GL/fragmentShaderLIGHT.GLSL");
 
@@ -154,8 +158,11 @@ int main()
 
         glUseProgram(shaders.ID);
 //        glm::vec3 lightPos(3.0f*cos(0.25*glfwGetTime()), 3.0f * sin(0.25*glfwGetTime()), 0.0f);
-        glm::vec3 lightPos(12.0f * cos(glfwGetTime()), 0.0f, 0.0f);
+        glm::vec3 lightPos(12.0f * cos(0.3f*glfwGetTime()), 0.0f, 0.0f);
         glUniform3f(glGetUniformLocation(shaders.ID, "cubeLight.position"), lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(glGetUniformLocation(shaders.ID, "flashLight.position"), cam.cameraPosition.x, cam.cameraPosition.y, cam.cameraPosition.z);
+        glUniform3f(glGetUniformLocation(shaders.ID, "flashLight.direction"), cam.cameraFront.x, cam.cameraFront.y, cam.cameraFront.z);
+
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));

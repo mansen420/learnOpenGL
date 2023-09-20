@@ -24,27 +24,42 @@ struct Light
     vec3 diffuse;
     vec3 specular;
     vec3 position;
+
+    float cutOff;
+    vec3 direction;
 };
 uniform Light cubeLight;
+uniform Light flashLight;
 uniform Material defaultMaterial;
 
-float lightDistane = length(fragPosition-cubeLight.position);
-float attenutation = 1.0/(lightDistane*lightDistane*quadraticFactor + lightDistane*linearFactor + constantFactor);
 void main()
 {
+    float lightDistane = length(fragPosition-cubeLight.position);
+    float attenutation = 1.0/(lightDistane*lightDistane*quadraticFactor + lightDistane*linearFactor + constantFactor);
+    //lightmaps
+    vec3 diffuseMap = vec3(texture(defaultMaterial.diffuse, textureCoordinates));
+    vec3 specMap = vec3(texture(defaultMaterial.specular, textureCoordinates));
     //ambient 
-    vec3 ambient = cubeLight.ambient * vec3(texture(defaultMaterial.diffuse, textureCoordinates));
+    vec3 ambient = cubeLight.ambient;
     //diffuse
-    vec3 direction = normalize(cubeLight.position-fragPosition);
-    float normalFactor = max(dot(direction, normalize(normal)), 0.0);
-    vec3 diffuse = normalFactor * cubeLight.diffuse * vec3(texture(defaultMaterial.diffuse, textureCoordinates));
+    //spot light calculations
+    vec3 diffuse = vec3(0.0);
+    vec3 spotDirection = normalize(flashLight.position-fragPosition);
+    float spotRelativeDirection = dot(spotDirection, normalize(-flashLight.direction));  //this returns the cosine of the angle between the two vectors
+    if (spotRelativeDirection>cos(flashLight.cutOff))       //angle1 > angle2  <->  cos(angle1) < cos(angle2) for angles<90
+    {
+        diffuse+= flashLight.diffuse;   
+    }
+    //cube light calculations
+    vec3 cubeDirection = normalize(cubeLight.position-fragPosition);
+    float cubeNormalFactor = max(dot(cubeDirection, normalize(normal)), 0.0);
+    diffuse += cubeNormalFactor * cubeLight.diffuse;
     //specular
     vec3 camDirection = normalize(camPos-fragPosition);
-    vec3 reflectDir = reflect(-direction, normalize(normal));
+    vec3 reflectDir = reflect(-cubeDirection, normalize(normal));
     float spec = pow(max(dot(camDirection, reflectDir),0.0), defaultMaterial.shininess);
-    vec3 specMap = vec3(texture(defaultMaterial.specular, textureCoordinates));
-    vec3 specular = spec * specMap * cubeLight.specular;
+    vec3 specular = spec * cubeLight.specular;
 
-    vec3 result = (ambient+diffuse+specular) * attenutation;     //how much light to reflect * color of the object 
+    vec3 result = (((ambient+diffuse)*diffuseMap)+(specular*specMap)) * attenutation;     //how much light to reflect * color of the object * attenutation
     FragColor = vec4(result, 1.0);
 }
