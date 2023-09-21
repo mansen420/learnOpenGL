@@ -74,6 +74,10 @@
     <IncludePath>C:\Users\msi\Desktop\My headers and libraries;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\msi\Desktop\My headers and libraries\glfw;C:\Users\msi\Desktop\My headers and libraries\assimp;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\Users\msi\Desktop\My headers and libraries;C:\Users\msi\Desktop\My headers and libraries\assimp;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\msi\Desktop\My headers and libraries\glfw;C:\Users\msi\Desktop\My headers and libraries\assimp;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -107,6 +111,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Link>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

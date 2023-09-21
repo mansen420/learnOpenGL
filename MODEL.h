@@ -23,6 +23,7 @@ class Model
 public:
 	Model (char* path)
 	{
+		loadModel(path);
 	}
 	void draw(unsigned int* shader_ID)
 	{
@@ -109,6 +110,7 @@ private:
 			vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 		}
+		return Mesh(vertices, indices, textures);
 	}
 	vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
 	{
