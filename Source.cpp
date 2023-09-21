@@ -3,13 +3,13 @@
 #include <iostream>
 #include "SHADER.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "GL_OBJECT.h"
 #include "CAMERA.h"
 #include "MISC_DECLR.h"
+#include "MODEL.h"
 
 int main()
 {
@@ -121,8 +121,8 @@ int main()
         std::cout << "loading texture failed" << std::endl;
 
     //shader configuration 
-    Shader shaders("C:/Users/msi/source/repos/learn the GL/learn the GL/vertexShader.GLSL",
-                   "C:/Users/msi/source/repos/learn the GL/learn the GL/fragmentShader.GLSL");
+    Shader shaders("C:/Users/msi/source/repos/learn the GL/vertexShader.GLSL",
+                   "C:/Users/msi/source/repos/learn the GL/fragmentShader.GLSL");
     shaders.use();      //use() before setting uniforms
     glUniform1i(glGetUniformLocation(shaders.ID, "defaultMaterial.diffuse"), 0);
     glUniform1i(glGetUniformLocation(shaders.ID, "defaultMaterial.specular"), 1);
@@ -141,10 +141,12 @@ int main()
     glUniform3f(glGetUniformLocation(shaders.ID, "flashLight.diffuse"), 0.7f, 0.7f, 0.7f);
     glUniform3f(glGetUniformLocation(shaders.ID, "flashLight.specular"), 1.0f, 1.0f, 1.0f);
     glUniform1f(glGetUniformLocation(shaders.ID, "flashLight.cutOff"), glm::cos(glm::radians(5.0f)));
-    Shader shaderLIGHT("C:/Users/msi/source/repos/learn the GL/learn the GL/vertexShader.GLSL",
+    Shader shaderLIGHT("C:/Users/msi/source/repos/learn the GL/vertexShader.GLSL",
         "C:/Users/msi/source/repos/learn the GL/fragmentShaderLIGHT.GLSL");
 
     //render loop
+    Model backPack("C:/Users/msi/Desktop/backpack/backpack.obj");
+
     glm::mat4 view = glm::mat4(1.0f);
     Camera cam(myWindow, &view);
     glEnable(GL_DEPTH_TEST);
@@ -168,6 +170,7 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glBindVertexArray(vao0.getID());
         glDrawArrays(GL_TRIANGLES, 0, 36);
+        backPack.draw(&shaders.ID);
 
         shaderLIGHT.use();
         model = glm::mat4(1.0f);

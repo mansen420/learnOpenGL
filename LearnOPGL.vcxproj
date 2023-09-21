@@ -111,20 +111,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Desktop\src\glad.c" />
-    <ClCompile Include="learn the gl\MISC_DEF.cpp" />
-    <ClCompile Include="learn the gl\Source.cpp" />
+    <ClCompile Include="callbackFunctions.cpp" />
+    <ClCompile Include="MISC_DEF.cpp" />
+    <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="learn the GL\CAMERA.h" />
-    <ClInclude Include="learn the gl\GL_OBJECT.h" />
-    <ClInclude Include="learn the gl\MISC_DECLR.h" />
-    <ClInclude Include="learn the gl\SHADER.h" />
+    <ClInclude Include="CAMERA.h" />
+    <ClInclude Include="GL_OBJECT.h" />
     <ClInclude Include="MESH.h" />
+    <ClInclude Include="MISC_DECLR.h" />
+    <ClInclude Include="MODEL.h" />
+    <ClInclude Include="SHADER.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="fragmentShader.GLSL" />
     <None Include="fragmentShaderLIGHT.GLSL" />
-    <None Include="learn the GL\fragmentShader.GLSL" />
-    <None Include="learn the GL\vertexShader.GLSL" />
+    <None Include="vertexShader.GLSL" />
+    <None Include="vertexShaderLight.GLSL" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
