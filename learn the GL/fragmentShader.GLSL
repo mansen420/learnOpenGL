@@ -7,6 +7,11 @@ in vec3 normal;
 
 uniform vec3 camPos;
 
+//magic constants 
+float constantFactor= 1.0;
+float linearFactor = 0.09; 
+float quadraticFactor = 0.032;
+
 struct Material
 {
     sampler2D ambient;
@@ -14,10 +19,6 @@ struct Material
     sampler2D specular;
     float shininess;
 };
-//magic constants 
-float constantFactor= 1.0;
-float linearFactor = 0.09; 
-float quadraticFactor = 0.032;
 struct Light
 {
     vec3 ambient;
@@ -28,6 +29,7 @@ struct Light
     float cutOff;
     vec3 direction;
 };
+
 uniform Light cubeLight;
 uniform Light flashLight;
 uniform Material defaultMaterial;
@@ -46,9 +48,16 @@ void main()
     vec3 diffuse = vec3(0.0);
     vec3 spotDirection = normalize(flashLight.position-fragPosition);
     float spotRelativeDirection = dot(spotDirection, normalize(-flashLight.direction));  //this returns the cosine of the angle between the two vectors
-    if (spotRelativeDirection>cos(flashLight.cutOff))       //angle1 > angle2  <->  cos(angle1) < cos(angle2) for angles<90
+    if (spotRelativeDirection>flashLight.cutOff)       //angle1 > angle2  <->  cos(angle1) < cos(angle2) for angles<90
     {
-        diffuse+= flashLight.diffuse;   
+        diffuse += flashLight.diffuse;   
+    }
+    else
+    {
+        float outerCutOff =cos(radians(7.0));
+        float epsilon =  abs(outerCutOff - flashLight.cutOff);
+        float intensity = clamp((spotRelativeDirection-outerCutOff)/epsilon, 0.0, 1.0);
+        diffuse += flashLight.diffuse * intensity;
     }
     //cube light calculations
     vec3 cubeDirection = normalize(cubeLight.position-fragPosition);

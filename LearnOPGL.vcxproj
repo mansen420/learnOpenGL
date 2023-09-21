@@ -72,7 +72,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Users\msi\Desktop\My headers and libraries;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\msi\Desktop\My headers and libraries\glfw;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Users\msi\Desktop\My headers and libraries\glfw;C:\Users\msi\Desktop\My headers and libraries\assimp;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -106,7 +106,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -119,6 +119,7 @@
     <ClInclude Include="learn the gl\GL_OBJECT.h" />
     <ClInclude Include="learn the gl\MISC_DECLR.h" />
     <ClInclude Include="learn the gl\SHADER.h" />
+    <ClInclude Include="MESH.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fragmentShaderLIGHT.GLSL" />

@@ -38,6 +38,9 @@
     <ClInclude Include="learn the GL\CAMERA.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MESH.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="learn the GL\fragmentShader.GLSL">

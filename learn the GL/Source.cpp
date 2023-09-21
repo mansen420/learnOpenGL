@@ -11,7 +11,6 @@
 #include "CAMERA.h"
 #include "MISC_DECLR.h"
 
-
 int main()
 {
     GLFWwindow* myWindow = init();
@@ -76,6 +75,7 @@ int main()
     vao1LIGHT.overwriteVBO(&vao0.vertexBufferObject);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
     //texture loading 
     stbi_set_flip_vertically_on_load(true);
     int height, width, nrChannels;
@@ -119,6 +119,7 @@ int main()
     }
     else
         std::cout << "loading texture failed" << std::endl;
+
     //shader configuration 
     Shader shaders("C:/Users/msi/source/repos/learn the GL/learn the GL/vertexShader.GLSL",
                    "C:/Users/msi/source/repos/learn the GL/learn the GL/fragmentShader.GLSL");
@@ -139,7 +140,7 @@ int main()
     glUniform3f(glGetUniformLocation(shaders.ID, "flashLight.ambient"), 0.2f, 0.2f, 0.2f);
     glUniform3f(glGetUniformLocation(shaders.ID, "flashLight.diffuse"), 0.7f, 0.7f, 0.7f);
     glUniform3f(glGetUniformLocation(shaders.ID, "flashLight.specular"), 1.0f, 1.0f, 1.0f);
-    glUniform1f(glGetUniformLocation(shaders.ID, "flashLight.cutOff"), 12.5f);
+    glUniform1f(glGetUniformLocation(shaders.ID, "flashLight.cutOff"), glm::cos(glm::radians(5.0f)));
     Shader shaderLIGHT("C:/Users/msi/source/repos/learn the GL/learn the GL/vertexShader.GLSL",
         "C:/Users/msi/source/repos/learn the GL/fragmentShaderLIGHT.GLSL");
 
@@ -157,7 +158,6 @@ int main()
 
 
         glUseProgram(shaders.ID);
-//        glm::vec3 lightPos(3.0f*cos(0.25*glfwGetTime()), 3.0f * sin(0.25*glfwGetTime()), 0.0f);
         glm::vec3 lightPos(12.0f * cos(0.3f*glfwGetTime()), 0.0f, 0.0f);
         glUniform3f(glGetUniformLocation(shaders.ID, "cubeLight.position"), lightPos.x, lightPos.y, lightPos.z);
         glUniform3f(glGetUniformLocation(shaders.ID, "flashLight.position"), cam.cameraPosition.x, cam.cameraPosition.y, cam.cameraPosition.z);
