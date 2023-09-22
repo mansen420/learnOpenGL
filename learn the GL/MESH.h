@@ -5,8 +5,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include <string>
-#include "learn the GL/SHADER.h"
-#include "learn the GL/GL_OBJECT.h"
+#include "SHADER.h"
+#include "GL_OBJECT.h"
 
 using std::vector;
 using std::string;

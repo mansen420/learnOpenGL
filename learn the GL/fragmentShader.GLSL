@@ -47,9 +47,30 @@ void main()
     vec3 ambient = cubeLight.ambient;
     //diffuse
     //spot light calculations
-    vec3 lightDirection= vec3(-0.2,-1.0,-0.2);
     vec3 diffuse = vec3(0.0);
-    diffuse +=  vec3(0.7,0.7,0.7)*max(dot(normalize(-lightDirection), normalize(normal)), 0.0);
+    vec3 spotDirection = normalize(flashLight.position-fragPosition);
+    float spotRelativeDirection = dot(spotDirection, normalize(-flashLight.direction));  //this returns the cosine of the angle between the two vectors
+    if (spotRelativeDirection>flashLight.cutOff)       //angle1 > angle2  <->  cos(angle1) < cos(angle2) for angles<90
+    {
+        diffuse += flashLight.diffuse;   
+    }
+    else
+    {
+        float outerCutOff =cos(radians(7.0));
+        float epsilon =  abs(outerCutOff - flashLight.cutOff);
+        float intensity = clamp((spotRelativeDirection-outerCutOff)/epsilon, 0.0, 1.0);
+        diffuse += flashLight.diffuse * intensity;
+    }
+    //cube light calculations
+    vec3 cubeDirection = normalize(cubeLight.position-fragPosition);
+    float cubeNormalFactor = max(dot(cubeDirection, normalize(normal)), 0.0);
+    diffuse += cubeNormalFactor * cubeLight.diffuse;
+    //specular
+    vec3 camDirection = normalize(camPos-fragPosition);
+    vec3 reflectDir = reflect(-cubeDirection, normalize(normal));
+    float spec = pow(max(dot(camDirection, reflectDir),0.0), defaultMaterial.shininess);
+    vec3 specular = spec * cubeLight.specular;
 
-    FragColor = vec4((diffuse)*diffuseMap, 1.0);
+    vec3 result = (((ambient+diffuse)*diffuseMap)+(specular*specMap)) * attenutation;     //how much light to reflect * color of the object * attenutation
+    FragColor = vec4(result, 1.0);
 }
