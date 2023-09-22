@@ -65,14 +65,14 @@ private:
 		vao->bind();
 		vao->bindVBO();
 		vao->bindEBO();
-		vao->vertexBufferData(&vertices, GL_STATIC_DRAW, sizeof(vertices) * sizeof(Vertex));
-		vao->elementBufferData(&indices, GL_STATIC_DRAW, sizeof(indices) * sizeof(unsigned int));
+		vao->vertexBufferData(&vertices[0], GL_STATIC_DRAW, vertices.size() * sizeof(Vertex));
+		vao->elementBufferData(&indices[0], GL_STATIC_DRAW, indices.size() * sizeof(unsigned int));
 		glEnableVertexAttribArray(0);		//vertex coords
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 		glEnableVertexAttribArray(1);		//normals 
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normalCoords));
 		glEnableVertexAttribArray(2);		//texture coords
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoords));
 	}
 };
 

@@ -124,13 +124,7 @@ int main()
     Shader shaders("C:/Users/msi/source/repos/learn the GL/learn the GL/vertexShader.GLSL",
                    "C:/Users/msi/source/repos/learn the GL/learn the GL/fragmentShader.GLSL");
     shaders.use();      //use() before setting uniforms
-    glUniform1i(glGetUniformLocation(shaders.ID, "defaultMaterial.diffuse"), 0);
-    glUniform1i(glGetUniformLocation(shaders.ID, "defaultMaterial.specular"), 1);
-    glUniform1i(glGetUniformLocation(shaders.ID, "defaultMaterial.ambient"), 2);
     //object material values
-    glUniform3f(glGetUniformLocation(shaders.ID, "defaultMaterial.ambient"), 1.0f, 0.5f, 0.31f);
-    glUniform3f(glGetUniformLocation(shaders.ID, "defaultMaterial.diffuse"), 1.0f, 0.5f, 0.31f);
-    glUniform3f(glGetUniformLocation(shaders.ID, "defaultMaterial.specular"), 0.5f, 0.5f, 0.5f);
     glUniform1f(glGetUniformLocation(shaders.ID, "defaultMaterial.shininess"), 32.0f);
     //light values
     glUniform3f(glGetUniformLocation(shaders.ID, "cubeLight.ambient"), 0.2f, 0.2f, 0.2f);
