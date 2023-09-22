@@ -1,2 +1,3 @@
 # WIP
-Read Me coming soon...
+This is a basic OpenGL-based renderer.
+
