@@ -91,6 +91,7 @@ private:
             vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         }
+        return Mesh(vertices, indices, textures);
     }
     vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
     {
@@ -100,7 +101,7 @@ private:
             aiString str;
             mat->GetTexture(type, i, &str);
             Texture temp_tex;
-            temp_tex.ID = TextureFromFile(str.C_Str(), directory);
+        //    temp_tex.ID = TextureFromFile(str.C_Str(), directory);
             temp_tex.path = str.C_Str();
             temp_tex.type = typeName;
             textures.push_back(temp_tex);

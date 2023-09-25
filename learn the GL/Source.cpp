@@ -3,124 +3,19 @@
 #include <iostream>
 #include "SHADER.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "GL_OBJECT.h"
 #include "CAMERA.h"
 #include "MISC_DECLR.h"
-#include "MESH.h"
+#include "MODEL.h"
 
 int main()
 {
     GLFWwindow* myWindow = init();
-    float vertices[] = {
-        //vertex             //texture   //normal 
-       -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.0f,  0.0f, -1.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,  0.0f, -1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,  0.0f, -1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,  0.0f, -1.0f,
-       -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, -1.0f,
-       -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.0f,  0.0f, -1.0f,
-
-       -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-       -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-       -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-
-       -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, -1.0f,  0.0f,  0.0f,
-       -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, -1.0f,  0.0f,  0.0f,
-       -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, -1.0f,  0.0f,  0.0f,
-       -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, -1.0f,  0.0f,  0.0f,
-       -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
-       -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, -1.0f,  0.0f,  0.0f,
-
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 1.0f,  0.0f,  0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f,  0.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 1.0f,  0.0f,  0.0f,
-
-       -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f, -1.0f,  0.0f,
-       -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.0f, -1.0f,  0.0f,
-       -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f, -1.0f,  0.0f,
-
-       -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,  1.0f,  0.0f,
-       -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f,  1.0f,  0.0f,
-       -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f,  0.0f
-    };
-    //buffer object instantiation and vertex attribute configuration 
-    VAO vao0(true);
-    vao0.bind();
-    vao0.bindVBO();
-    vao0.vertexBufferData(vertices, GL_STATIC_DRAW, sizeof(vertices));
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-    VAO vao1LIGHT(true);
-    vao1LIGHT.bind();
-    vao1LIGHT.overwriteVBO(&vao0.vertexBufferObject);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    //texture loading 
     stbi_set_flip_vertically_on_load(true);
-    int height, width, nrChannels;
-    unsigned char* data = stbi_load("C:/Users/msi/Desktop/container2.PNG", &width, &height, &nrChannels, 0);
-
-    unsigned int texture0;
-    if (data)
-    {
-        glGenTextures(1, &texture0);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture0);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-        std::cout << "loading texture failed" << std::endl;
-    data = 0;
-    data = stbi_load("C:/Users/msi/Desktop/container2_specular.PNG", &width, &height, &nrChannels, 0);
-    unsigned int texture1;
-    if (data)
-    {
-        glGenTextures(1, &texture1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-        std::cout << "loading texture failed" << std::endl;
-
-    data = 0;
-    data = stbi_load("C:/Users/msi/Desktop/matrix.JPG", &width, &height, &nrChannels, 0);
-    unsigned int texture2;
-    if (data)
-    {
-        glGenTextures(1, &texture2);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, texture2);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-        std::cout << "loading texture failed" << std::endl;
-
     //shader configuration 
     Shader shaders("C:/Users/msi/source/repos/learn the GL/learn the GL/vertexShader.GLSL",
         "C:/Users/msi/source/repos/learn the GL/learn the GL/fragmentShader.GLSL");
@@ -153,14 +48,16 @@ int main()
     v3.textureCoords = glm::vec3(0.5, 0.0, 0.5);
     v3.normalCoords = glm::vec3(0.0, 1.0, 0.0);
 
-    testingVs.push_back(v1), testingVs.push_back(v2), testingVs.push_back(v3);
+ /*   testingVs.push_back(v1), testingVs.push_back(v2), testingVs.push_back(v3);
     vector<unsigned int> indices{ 0,1,2 };
     vector<Texture> textures;
     Texture tex;
     tex.ID = texture0;
     tex.type = "texture_diffuse";
     textures.push_back(tex);
-    Mesh testTriangle (testingVs, indices, textures);
+    Mesh testTriangle (testingVs, indices, textures); */
+ 
+    Model backpack("C:/Users/msi/Desktop/backpack/backpack.obj");
 
     //render loop
     glm::mat4 view = glm::mat4(1.0f);
@@ -184,10 +81,10 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        glBindVertexArray(vao0.getID());
+        backpack.draw(shaders);
+
       //  glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        testTriangle.draw(&shaders.ID);
 
         shaderLIGHT.use();
         model = glm::mat4(1.0f);
@@ -196,8 +93,7 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(shaderLIGHT.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));  //must send uniforms for each program 
         glUniformMatrix4fv(glGetUniformLocation(shaderLIGHT.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shaderLIGHT.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        glBindVertexArray(vao1LIGHT.getID());
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+
 
         cam.update();
         shaders.use();

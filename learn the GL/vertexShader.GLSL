@@ -5,6 +5,7 @@ layout (location = 2) in vec3 aNormal;
 uniform mat4 view, model, projection;
 
 out vec2 textureCoordinates;
+out vec3 vertexPosition;
 out vec3 fragPosition;
 out vec3 normal;
 void main()
@@ -13,4 +14,5 @@ void main()
 	textureCoordinates = textCoords;
 	normal = mat3(transpose(inverse(model))) * aNormal;
 	fragPosition = vec3( model * vec4(aPos,1.0) );
+	vertexPosition = vec3(model*(aPos,1.0));
 }
