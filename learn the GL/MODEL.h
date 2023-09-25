@@ -21,6 +21,7 @@ public:
 private:
     // model data
     vector<Mesh> meshes;
+    vector<Texture> textures_loaded;
     string directory;
 
     void loadModel(string path)
@@ -98,25 +99,41 @@ private:
         vector<Texture> textures;
         for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
         {
+            bool skip = false;
+
             aiString str;
             mat->GetTexture(type, i, &str);
-            Texture temp_tex;
-        //    temp_tex.ID = TextureFromFile(str.C_Str(), directory);
-            temp_tex.path = str.C_Str();
-            temp_tex.type = typeName;
-            textures.push_back(temp_tex);
+            for (int j = 0; j < textures_loaded.size(); j++)    
+            {   //the texture is already loaded, just push it
+                if (std::strcmp(textures_loaded[i].path.data(), str.C_Str()) == 0)
+                {
+                    textures.push_back(textures_loaded[j]);
+                    skip = true;
+                    break;
+                }
+            }
+            if (!skip)  //load the texture
+            {
+                Texture temp_tex;
+                temp_tex.ID = TextureFromFile(str.C_Str(), directory);
+                temp_tex.path = str.C_Str();
+                temp_tex.type = typeName;
+                textures.push_back(temp_tex);
+                textures_loaded.push_back(temp_tex); // add to loaded textures
+            }
         }
         return textures;
     }
-    unsigned int TextureFromFile(std::string path, std::string directory)
+    unsigned int TextureFromFile(const char* path, const std::string& directory)
     {
         string filename = string(path);
         filename = directory + '/' + filename;
 
         unsigned int textureID;
         glGenTextures(1, &textureID);
-
+        std::cout << path;
         int width, height, nrComponents;
+        stbi_set_flip_vertically_on_load(true);
         unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
         if (data)
         {
