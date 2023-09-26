@@ -13,7 +13,7 @@
 #include "MODEL.h"
 
 int main()
-{
+{ 
     GLFWwindow* myWindow = init();
     stbi_set_flip_vertically_on_load(true);
     //shader configuration 
@@ -22,9 +22,63 @@ int main()
     Shader shaderLIGHT("C:/Users/msi/source/repos/learn the GL/learn the GL/vertexShader.GLSL",
         "C:/Users/msi/source/repos/learn the GL/fragmentShaderLIGHT.GLSL");
     //Testing
- 
+    /// there are 3 potential sources of error :
+    /// 1.the sampler
+    /// 2.the texture image not being loaded correctly 
+    /// 3.the texture coordinates
+    /// we can mostly rule out (2) above
     Model backpack("C:/Users/msi/Desktop/backpack/backpack.obj");
 
+    vector<Vertex> vertices;
+    Vertex temp_vert;
+    glm::vec3 vertex_pos = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 normals = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec2 texture_coords = glm::vec2(0.0, 0.0);
+    temp_vert.vertexCoords = vertex_pos;
+    temp_vert.normalCoords = normals;
+    temp_vert.textureCoords = texture_coords;
+    vertices.push_back(temp_vert);
+
+    vertex_pos = glm::vec3(1.0f, 0.0f, 0.0f);
+    normals = glm::vec3(0.0f, 1.0f, 0.0f);
+    texture_coords = glm::vec2(1.0, 0.0);
+    temp_vert.vertexCoords = vertex_pos;
+    temp_vert.normalCoords = normals;
+    temp_vert.textureCoords = texture_coords;
+    vertices.push_back(temp_vert);
+
+    vertex_pos = glm::vec3(0.0f, 1.0f, 0.0f);
+    normals = glm::vec3(0.0f, 1.0f, 0.0f);
+    texture_coords = glm::vec2(0.0, 1.0);
+    temp_vert.vertexCoords = vertex_pos;
+    temp_vert.normalCoords = normals;
+    temp_vert.textureCoords = texture_coords;
+    vertices.push_back(temp_vert);
+
+    vertex_pos = glm::vec3(1.0f, 1.0f, 0.0f);
+    normals = glm::vec3(0.0f, 1.0f, 0.0f);
+    texture_coords = glm::vec2(1.0, 1.0);
+    temp_vert.vertexCoords = vertex_pos;
+    temp_vert.normalCoords = normals;
+    temp_vert.textureCoords = texture_coords;
+    vertices.push_back(temp_vert);
+
+    vector<unsigned int>indices{
+        0, 1, 3, 0, 2, 3
+    };
+    vector<Texture> textures;
+    //load from file
+    unsigned int texture_id;
+    glGenTextures(1, &texture_id);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    int height, width, nrchannels;
+    unsigned char* data = stbi_load("C:/Users/msi/Desktop/backpack/diffuse.jpg", &width, &height, &nrchannels, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    Texture temp_tex{ texture_id, "texture_diffuse", "C:/Users/msi/Desktop/backpack/diffuse.jpg" };
+    textures.push_back(temp_tex);
+
+    Mesh test_mesh(vertices, indices, textures);
     //render loop
     glm::mat4 view = glm::mat4(1.0f);
     Camera cam(myWindow, &view);
@@ -47,9 +101,9 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shaders.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        backpack.draw(shaders);
 
       //  glDrawArrays(GL_TRIANGLES, 0, 36);
+        backpack.draw(shaders);
 
 
         shaderLIGHT.use();
