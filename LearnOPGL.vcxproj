@@ -138,7 +138,6 @@
     <ClInclude Include="learn the gl\SHADER.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragmentShaderLIGHT.GLSL" />
     <None Include="learn the GL\fragmentShader.GLSL" />
     <None Include="learn the GL\vertexShader.GLSL" />
   </ItemGroup>
