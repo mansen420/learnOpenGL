@@ -19,7 +19,8 @@ uniform Material defaultMaterial;
 
 void main()
 {
-    vec3 diffuse = vec3(texture(defaultMaterial.texture_diffuse1, textureCoordinates));
+    vec3 diffuse, ambient, specular = vec3(1.0);
+    diffuse = vec3(texture(defaultMaterial.texture_diffuse1, textureCoordinates));
     vec3 result = diffuse;
     FragColor = vec4(result, 1.0);
 }
