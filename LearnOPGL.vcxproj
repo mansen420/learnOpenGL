@@ -112,11 +112,17 @@
     <Link>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Desktop\src\glad.c" />
@@ -126,12 +132,12 @@
   <ItemGroup>
     <ClInclude Include="learn the GL\CAMERA.h" />
     <ClInclude Include="learn the gl\GL_OBJECT.h" />
+    <ClInclude Include="learn the GL\MESH.h" />
     <ClInclude Include="learn the gl\MISC_DECLR.h" />
+    <ClInclude Include="learn the GL\MODEL.h" />
     <ClInclude Include="learn the gl\SHADER.h" />
-    <ClInclude Include="MESH.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragmentShaderLIGHT.GLSL" />
     <None Include="learn the GL\fragmentShader.GLSL" />
     <None Include="learn the GL\vertexShader.GLSL" />
   </ItemGroup>

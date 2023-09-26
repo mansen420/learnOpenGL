@@ -5,8 +5,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include <string>
-#include "learn the GL/SHADER.h"
-#include "learn the GL/GL_OBJECT.h"
+#include "SHADER.h"
+#include "GL_OBJECT.h"
 
 using std::vector;
 using std::string;
@@ -20,6 +20,7 @@ struct Texture
 {
 	unsigned int ID;
 	std::string type;
+	std::string path;
 };
 
 class Mesh
@@ -48,8 +49,10 @@ public:
 				number = std::to_string(diffuseNr++);
 			else if (name == "texture_specular")
 				number = std::to_string(specularNr++);
+			std::cout << ("defaultMaterial." + name + number).c_str() << "\n";
 
-			glUniform1i(glGetUniformLocation(*shaderID, ("material." + name + number).c_str()), i);
+			glUniform1i(glGetUniformLocation(*shaderID, ("defaultMaterial." + name + number).c_str()), i);
+
 			glBindTexture(GL_TEXTURE_2D, textures[i].ID);
 		}
 		glActiveTexture(GL_TEXTURE0);
@@ -65,14 +68,14 @@ private:
 		vao->bind();
 		vao->bindVBO();
 		vao->bindEBO();
-		vao->vertexBufferData(&vertices, GL_STATIC_DRAW, sizeof(vertices) * sizeof(Vertex));
-		vao->elementBufferData(&indices, GL_STATIC_DRAW, sizeof(indices) * sizeof(unsigned int));
+		vao->vertexBufferData(&vertices[0], GL_STATIC_DRAW, vertices.size() * sizeof(Vertex));
+		vao->elementBufferData(&indices[0], GL_STATIC_DRAW, indices.size() * sizeof(unsigned int));
 		glEnableVertexAttribArray(0);		//vertex coords
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 		glEnableVertexAttribArray(1);		//normals 
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normalCoords));
 		glEnableVertexAttribArray(2);		//texture coords
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoords));
 	}
 };
 
